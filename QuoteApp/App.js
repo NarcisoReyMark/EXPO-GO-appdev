@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  ActivityIndicator, 
-  TouchableOpacity, 
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 
 export default function App() {
@@ -18,15 +18,18 @@ export default function App() {
   const fetchQuote = async () => {
     setLoading(true);
     setError(null);
+
     try {
-      // Using DummyJSON quotes API as a reliable alternative
-      const response = await fetch('https://dummyjson.com/quotes/random');
-      
+      const response = await fetch(
+        'https://dummyjson.com/quotes/random'
+      );
+
       if (!response.ok) {
         throw new Error('Failed to fetch quote. Please try again.');
       }
-      
+
       const data = await response.json();
+
       setQuote({
         text: data.quote,
         author: data.author,
@@ -43,120 +46,198 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.header}>Daily Inspiration</Text>
+    <ImageBackground
+      source={require('./assets/bg.jpg')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.container}>
 
-        {loading && (
-          <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#4F46E5" />
-          </View>
-        )}
+        <View style={styles.cardContainer}>
 
-        {error && !loading && (
-          <View style={styles.centerContainer}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        )}
-
-        {!loading && !error && (
-          <ScrollView 
-            style={styles.quoteScrollContainer} 
-            contentContainerStyle={styles.quoteScrollContent}
+          <ImageBackground
+            source={require('./assets/card.jpg')}
+            style={styles.card}
+            imageStyle={styles.cardBackground}
+            resizeMode="cover"
           >
-            <Text style={styles.quoteText}>"{quote.text}"</Text>
-            <Text style={styles.authorText}>— {quote.author}</Text>
-          </ScrollView>
-        )}
 
-        <TouchableOpacity 
-          style={[styles.button, loading && styles.buttonDisabled]} 
-          onPress={fetchQuote}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>New Quote</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+            <View style={styles.overlay}>
+
+              <Text style={styles.header}>
+                 Daily Quotes 
+              </Text>
+
+              {loading && (
+                <View style={styles.centerContainer}>
+                  <ActivityIndicator
+                    size="large"
+                    color="#FFFFFF"
+                  />
+                </View>
+              )}
+
+              {error && !loading && (
+                <View style={styles.centerContainer}>
+                  <Text style={styles.errorText}>
+                    {error}
+                  </Text>
+                </View>
+              )}
+
+              {!loading && !error && (
+                <ScrollView
+                  style={styles.quoteScrollContainer}
+                  contentContainerStyle={styles.quoteScrollContent}
+                >
+                  <Text style={styles.quoteText}>
+                    "{quote.text}"
+                  </Text>
+
+                  <Text style={styles.authorText}>
+                    — {quote.author}
+                  </Text>
+                </ScrollView>
+              )}
+
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  loading && styles.buttonDisabled,
+                ]}
+                onPress={fetchQuote}
+                disabled={loading}
+              >
+                <Text style={styles.buttonText}>
+                  New Quote
+                </Text>
+              </TouchableOpacity>
+
+            </View>
+
+          </ImageBackground>
+
+        </View>
+
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+
+
+
+  background: {
+    flex: 1,
+  },
+
   container: {
     flex: 1,
-    backgroundColor: '#053698',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.20)',
   },
+
+ cardContainer: {
+  width: '90%',
+  maxWidth: 500,
+  height: 400,
+  backgroundColor: 'transparent',
+  borderRadius: 16,
+  overflow: 'hidden',
+},
+
   card: {
-    width: '90%',
-    maxWidth: 500,
-    height: 350, // Fixed height keeps the card sized correctly for the ScrollView
-    backgroundColor: '#6558b6',
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'transparent',
+},
+
+  cardBackground: {
     borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
   },
+
+ overlay: {
+  flex: 1,
+  padding: 5,
+},
   header: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#000000',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
+  fontStyle: 'italic',
+  fontSize: 20,
+  fontWeight: '700',
+  color: '#030303',
+  textAlign: 'center',
+
+  backgroundColor: '#fcfcfc',
+
+  borderWidth: 3,
+  borderColor: '#265203',
+  borderRadius: 15,
+
+  paddingVertical: 12,
+  width: '100%',
+
+  marginBottom: 19,
+},
+
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 40,
   },
+
   quoteScrollContainer: {
     marginVertical: 10,
-    maxHeight: 260, // Restricts scroll area height so it sits nicely between the header and button
+    maxHeight: 260,
   },
+
   quoteScrollContent: {
     justifyContent: 'center',
     paddingVertical: 10,
   },
+
   quoteText: {
-    fontFamily: 'Arial',
+    fontFamily: 'monoscope',
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 16,
-    lineHeight: 26,
+    lineHeight: 28,
   },
+
   authorText: {
     fontStyle: 'italic',
     fontSize: 16,
     fontWeight: '600',
-    color: '#000000',
+    color: '#FFFFFF',
     textAlign: 'center',
   },
+
   errorText: {
-    color: '#EF4444',
+    color: '#b89494',
     fontSize: 16,
     textAlign: 'center',
   },
+
   button: {
-    backgroundColor: '#000000',
+    backgroundColor: '#fff5f5',
     paddingVertical: 14,
     borderRadius: 50,
     alignItems: 'center',
-    marginTop: 'auto', 
+    marginTop: 'auto',
   },
+
   buttonDisabled: {
-    backgroundColor: '#9CA3AF',
+    backgroundColor: '#2279ca',
   },
+
   buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#000000',
+    fontSize: 15,
+    fontWeight: 'bold',
+
   },
 });
